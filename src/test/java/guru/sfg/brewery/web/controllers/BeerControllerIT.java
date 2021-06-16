@@ -42,4 +42,8 @@ public class BeerControllerIT extends BaseIT{
                 .andExpect(view().name("beers/findBeers"))
                 .andExpect(model().attributeExists("beer"));
     }
+
+
+
+
 }
