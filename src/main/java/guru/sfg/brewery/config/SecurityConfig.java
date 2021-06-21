@@ -28,7 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
                 http.addFilterBefore(restHeaderAuthFilter(authenticationManager()),
-                        UsernamePasswordAuthenticationFilter.class); // Remove this when test works to see if it is needed.
+                        UsernamePasswordAuthenticationFilter.class)
+                .csrf().disable();
 
                 http
                 .authorizeRequests(authorize -> {
