@@ -65,6 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+/*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -78,6 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         auth.inMemoryAuthentication().withUser("scott").password("{bcrypt10}$2a$10$FZw5UYNPq5KUJFlmOSkKGeL.SmN7Eyjslk133wtpfh4ypDsRbreLS").roles("CUSTOMER");
     }
+*/
 
     //    @Override
 //    @Bean
