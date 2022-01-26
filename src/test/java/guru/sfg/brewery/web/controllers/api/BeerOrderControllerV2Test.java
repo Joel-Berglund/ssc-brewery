@@ -1,5 +1,10 @@
 package guru.sfg.brewery.web.controllers.api;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.sfg.brewery.bootstrap.DefaultBreweryLoader;
 import guru.sfg.brewery.domain.Beer;
@@ -10,20 +15,16 @@ import guru.sfg.brewery.repositories.BeerRepository;
 import guru.sfg.brewery.repositories.CustomerRepository;
 import guru.sfg.brewery.web.controllers.BaseIT;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class BeerOrderControllerV2Test extends BaseIT {
+
     public static final String API_ROOT = "/api/v2/orders/";
 
     @Autowired
@@ -74,12 +75,11 @@ class BeerOrderControllerV2Test extends BaseIT {
     @WithUserDetails(value = DefaultBreweryLoader.DUNEDIN_USER)
     @Test
     void listOrdersCustomerDunedinAuth() throws Exception {
-        mockMvc.perform(get(API_ROOT ))
+        mockMvc.perform(get(API_ROOT))
                 .andExpect(status().isOk());
     }
 
 
-    @Disabled
     @Transactional
     @Test
     void getByOrderIdNotAuth() throws Exception {
@@ -89,7 +89,6 @@ class BeerOrderControllerV2Test extends BaseIT {
                 .andExpect(status().isUnauthorized());
     }
 
-    @Disabled
     @Transactional
     @WithUserDetails("spring")
     @Test
@@ -100,7 +99,6 @@ class BeerOrderControllerV2Test extends BaseIT {
                 .andExpect(status().is2xxSuccessful());
     }
 
-    @Disabled
     @Transactional
     @WithUserDetails(DefaultBreweryLoader.STPETE_USER)
     @Test
@@ -111,7 +109,6 @@ class BeerOrderControllerV2Test extends BaseIT {
                 .andExpect(status().is2xxSuccessful());
     }
 
-    @Disabled
     @Transactional
     @WithUserDetails(DefaultBreweryLoader.DUNEDIN_USER)
     @Test
@@ -119,6 +116,6 @@ class BeerOrderControllerV2Test extends BaseIT {
         BeerOrder beerOrder = stPeteCustomer.getBeerOrders().stream().findFirst().orElseThrow();
 
         mockMvc.perform(get(API_ROOT + beerOrder.getId()))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 }
