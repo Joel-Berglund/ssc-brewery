@@ -1,6 +1,10 @@
 package guru.sfg.brewery.security.listeners;
 
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import guru.sfg.brewery.domain.security.LoginFailure;
 import guru.sfg.brewery.domain.security.User;
 import guru.sfg.brewery.repositories.security.LoginFailureRepository;
@@ -46,8 +50,21 @@ public class AuthenticationFailureListener {
             }
 
             LoginFailure loginFailure = loginFailureRepository.save(builder.build());
-
             log.debug("Failure Event: " + loginFailure.getId());
+
+            if(loginFailure.getUser() != null) {
+                lockUserAccount(loginFailure.getUser());
+            }
+        }
+    }
+
+    private void lockUserAccount(User user) {
+        List<LoginFailure> failures = loginFailureRepository.findAllByUserAndCreatedDateIsAfter(user, Timestamp.valueOf(LocalDateTime.now().minusDays(1)));
+
+        if (failures.size() > 3) {
+            log.debug("Locking User Account... ");
+            user.setAccountNonLocked(false);
+            userRepository.save(user);
         }
     }
 }
