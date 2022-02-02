@@ -3,15 +3,7 @@ package guru.sfg.brewery.security.google;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import guru.sfg.brewery.domain.security.User;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.autoconfigure.security.servlet.StaticResourceRequest;
@@ -24,7 +16,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Created by jt on 7/24/20.
+ */
 @Slf4j
 @Component
 public class Google2faFilter extends GenericFilterBean {
@@ -50,20 +51,22 @@ public class Google2faFilter extends GenericFilterBean {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication != null && !authenticationTrustResolver.isAnonymous(authentication)) {
+        if (authentication != null  && !authenticationTrustResolver.isAnonymous(authentication)){
             log.debug("Processing 2FA Filter");
 
-            if(authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
+            if (authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
                 User user = (User) authentication.getPrincipal();
 
-                if(user.getUseGoogle2fa() && user.getGoogle2faRequired()) {
+                if (user.getUseGoogle2fa() && user.getGoogle2faRequired()) {
                     log.debug("2FA Required");
 
                     google2faFailureHandler.onAuthenticationFailure(request, response, null);
                     return;
                 }
+
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
